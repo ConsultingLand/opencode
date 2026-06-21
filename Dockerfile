@@ -1,38 +1,23 @@
 FROM node:22-slim
 
-# Installiere ALLE Build-Tools inkl. Python
 RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    python-is-python3 \
-    make \
-    g++ \
-    gcc \
-    git \
-    curl \
-    libc6-dev \
+    python3 python3-pip python-is-python3 make g++ gcc git curl libc6-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Setze Python-Pfad explizit für node-gyp
 ENV PYTHON=/usr/bin/python3
 
-# Installiere bun
 RUN npm install -g bun
 
 WORKDIR /app
 
-# Kopiere ALLES (Workspaces brauchen ihren Code für bun install)
 COPY . .
 
-# Installiere node-gyp
 RUN npm install -g node-gyp
-
-# Installiere Dependencies
 RUN bun install --trusted
 
-# Build
-RUN bun run build
+# Build die Web-App
+RUN bun run --cwd packages/app build
 
 EXPOSE 3000
 
-CMD ["bun", "run", "start"]
+CMD ["bun", "run", "--cwd", "packages/app", "start"]
