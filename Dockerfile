@@ -21,11 +21,14 @@ RUN npm install -g bun
 
 WORKDIR /app
 
-# Kopiere Root-Package-Files
+# Kopiere Root-Dateien zuerst (für Caching)
 COPY package.json ./
 COPY bun.lockb* ./
 
-# Kopiere Workspace package.json Files (für Caching)
+# Kopiere patches (WICHTIG: müssen vor bun install da sein!)
+COPY patches/ ./patches/
+
+# Kopiere Workspace package.json Files
 COPY packages/core/package.json ./packages/core/
 COPY packages/opencode/package.json ./packages/opencode/
 COPY packages/app/package.json ./packages/app/
@@ -40,7 +43,7 @@ RUN npm install -g node-gyp
 # Installiere Dependencies
 RUN bun install --trusted
 
-# Kopiere den Rest
+# Kopiere den Rest des Codes
 COPY . .
 
 # Build
