@@ -15,9 +15,6 @@ COPY . .
 RUN npm install -g node-gyp
 RUN bun install --trusted
 
-# Build die Web-App
-RUN bun run --cwd packages/app build
-
 EXPOSE 3000
 
 CMD ["bun", "run", "--cwd", "packages/app", "start"]
