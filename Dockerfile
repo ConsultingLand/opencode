@@ -17,4 +17,24 @@ RUN bun install --trusted
 
 EXPOSE 3000
 
+# Erstelle Config mit Kimi K2.7 direkt im Image
+RUN mkdir -p /root/.config/opencode && \
+    echo '{
+  "provider": {
+    "moonshot": {
+      "name": "Moonshot AI",
+      "options": {
+        "baseURL": "https://api.moonshot.cn/v1",
+        "apiKey": "${MOONSHOT_API_KEY}"
+      },
+      "models": {
+        "kimi-k2-7": {
+          "name": "Kimi K2.7"
+        }
+      }
+    }
+  },
+  "model": "moonshot/kimi-k2-7"
+}' > /root/.config/opencode/opencode.json
+
 CMD ["bun", "run", "--cwd", "packages/app", "start"]
